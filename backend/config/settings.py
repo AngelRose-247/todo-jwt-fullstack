@@ -32,8 +32,8 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "todo-jwt-fullstack-1.onrender.com",
 ]
-
 
 
 # Application definition
