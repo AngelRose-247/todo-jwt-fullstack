@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 function Register() {
@@ -8,6 +8,7 @@ function Register() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -27,80 +28,116 @@ function Register() {
             return;
         }
 
+        setLoading(true);
+
         try {
             await api.post("/register/", {
-                username,
+                username: username.trim(),
                 password,
             });
 
-            setSuccess("Account created successfully!");
+            setSuccess("Account created successfully! Redirecting to login...");
 
             setTimeout(() => {
                 navigate("/login");
-            }, 1000);
-        } catch (error) {
-            if (error.response?.data?.username) {
-                setError(error.response.data.username[0]);
-            } else if (error.response?.data?.password) {
-                setError(error.response.data.password[0]);
+            }, 1200);
+        } catch (err) {
+            if (err.response?.data?.username) {
+                setError(
+                    Array.isArray(err.response.data.username)
+                        ? err.response.data.username[0]
+                        : err.response.data.username
+                );
+            } else if (err.response?.data?.password) {
+                setError(
+                    Array.isArray(err.response.data.password)
+                        ? err.response.data.password[0]
+                        : err.response.data.password
+                );
             } else {
-                setError("Registration failed. Please try again.");
+                setError("Registration failed. Please try a different username.");
             }
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="login-container">
-            <h1>Register</h1>
+        <div className="auth-wrapper">
+            <div className="auth-card">
+                <header className="auth-header">
+                    <h1 className="auth-title">Create Account</h1>
+                    <p className="auth-subtitle">Get started with your minimalist To-Do list</p>
+                </header>
 
-            {error && <p>{error}</p>}
-            {success && <p>{success}</p>}
+                {error && <div className="alert-message alert-error">{error}</div>}
+                {success && <div className="alert-message alert-success">{success}</div>}
 
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) =>
-                        setUsername(e.target.value)
-                    }
-                    required
-                />
+                <form className="auth-form" onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="reg-username">
+                            Username
+                        </label>
+                        <input
+                            id="reg-username"
+                            type="text"
+                            className="form-input"
+                            placeholder="Choose a username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                            autoFocus
+                        />
+                    </div>
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) =>
-                        setPassword(e.target.value)
-                    }
-                    required
-                />
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="reg-password">
+                            Password
+                        </label>
+                        <input
+                            id="reg-password"
+                            type="password"
+                            className="form-input"
+                            placeholder="At least 8 characters"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    value={confirmPassword}
-                    onChange={(e) =>
-                        setConfirmPassword(e.target.value)
-                    }
-                    required
-                />
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="reg-confirm">
+                            Confirm Password
+                        </label>
+                        <input
+                            id="reg-confirm"
+                            type="password"
+                            className="form-input"
+                            placeholder="Re-enter password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                <button type="submit">
-                    Register
-                </button>
-            </form>
+                    <button
+                        type="submit"
+                        className="btn-primary auth-submit-btn"
+                        disabled={loading}
+                    >
+                        {loading ? "Creating account..." : "Register"}
+                    </button>
+                </form>
 
-            <p>
-                Already have an account?{" "}
-                <button
-                    type="button"
-                    onClick={() => navigate("/login")}
-                >
-                    Login
-                </button>
-            </p>
+                <footer className="auth-footer">
+                    <p className="auth-switch-text">
+                        Already have an account?{" "}
+                        <Link to="/login" className="auth-link">
+                            Login
+                        </Link>
+                    </p>
+                </footer>
+            </div>
         </div>
     );
 }

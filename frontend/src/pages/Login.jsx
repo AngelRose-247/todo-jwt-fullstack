@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const { login } = useAuth();
     const navigate = useNavigate();
@@ -13,54 +14,80 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setLoading(true);
 
         try {
-            await login(username, password);
+            await login(username.trim(), password);
             navigate("/");
-        } catch (error) {
-            setError("Invalid username or password");
+        } catch (err) {
+            setError(
+                err.response?.data?.detail || "Invalid username or password"
+            );
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="login-container">
-            <h1>Login</h1>
+        <div className="auth-wrapper">
+            <div className="auth-card">
+                <header className="auth-header">
+                    <h1 className="auth-title">Welcome Back</h1>
+                    <p className="auth-subtitle">Sign in to manage your tasks</p>
+                </header>
 
-            {error && <p>{error}</p>}
+                {error && <div className="alert-message alert-error">{error}</div>}
 
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) =>
-                        setUsername(e.target.value)
-                    }
-                />
+                <form className="auth-form" onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="username">
+                            Username
+                        </label>
+                        <input
+                            id="username"
+                            type="text"
+                            className="form-input"
+                            placeholder="Enter your username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                            autoFocus
+                        />
+                    </div>
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) =>
-                        setPassword(e.target.value)
-                    }
-                />
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="password">
+                            Password
+                        </label>
+                        <input
+                            id="password"
+                            type="password"
+                            className="form-input"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                <button type="submit">
-                    Login
-                </button>
-            </form>
-                 
-            <p>
-    Don't have an account?{" "}
-    <button
-        type="button"
-        onClick={() => navigate("/register")}
-    >
-        Register
-    </button>
-</p>
+                    <button
+                        type="submit"
+                        className="btn-primary auth-submit-btn"
+                        disabled={loading}
+                    >
+                        {loading ? "Signing in..." : "Login"}
+                    </button>
+                </form>
+
+                <footer className="auth-footer">
+                    <p className="auth-switch-text">
+                        Don't have an account?{" "}
+                        <Link to="/register" className="auth-link">
+                            Register
+                        </Link>
+                    </p>
+                </footer>
+            </div>
         </div>
     );
 }
