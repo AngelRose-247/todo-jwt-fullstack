@@ -1,7 +1,8 @@
+@'
 import axios from "axios";
 
 const api = axios.create({
-   baseURL: `${import.meta.env.VITE_API_URL}/api`,
+    baseURL: `${import.meta.env.VITE_API_URL}/api`,
 });
 
 api.interceptors.request.use(
@@ -68,7 +69,7 @@ api.interceptors.response.use(
                 }
 
                 const response = await axios.post(
-                   `${import.meta.env.VITE_API_URL}/api/token/refresh/`,
+                    `${import.meta.env.VITE_API_URL}/api/token/refresh/`,
                     {
                         refresh: refreshToken,
                     }
@@ -106,3 +107,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+'@ | Set-Content .\frontend\src\api\axios.js
