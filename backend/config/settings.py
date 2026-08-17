@@ -33,7 +33,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.environ.get(
         "ALLOWED_HOSTS",
-        "localhost,127.0.0.1,todo-jwt-fullstack-1.onrender.com,.onrender.com",
+        "localhost,127.0.0.1,todo-jwt-fullstack.onrender.com,todo-jwt-fullstack-1.onrender.com,.onrender.com",
     ).split(",")
     if host.strip()
 ]
@@ -229,7 +229,7 @@ CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.environ.get(
         "CSRF_TRUSTED_ORIGINS",
-        "https://todo-jwt-fullstack.vercel.app,https://todo-jwt-fullstack-1.onrender.com,http://localhost:5173,http://127.0.0.1:5173",
+        "https://todo-jwt-fullstack.vercel.app,https://todo-jwt-fullstack.onrender.com,https://todo-jwt-fullstack-1.onrender.com,http://localhost:5173,http://127.0.0.1:5173",
     ).split(",")
     if origin.strip()
 ]
