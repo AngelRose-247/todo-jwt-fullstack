@@ -93,7 +93,9 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -239,7 +241,11 @@ CSRF_TRUSTED_ORIGINS = [
 # WHITENOISE & STORAGES
 # ============================================================
 
-WHITENOISE_ROOT = BASE_DIR.parent / "frontend" / "dist"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+WHITENOISE_ROOT = BASE_DIR / "static"
 
 STORAGES = {
     "default": {
@@ -253,4 +259,5 @@ STORAGES = {
 STATICFILES_STORAGE = (
     "whitenoise.storage.CompressedManifestStaticFilesStorage"
 )
+
 
