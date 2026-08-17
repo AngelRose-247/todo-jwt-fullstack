@@ -29,10 +29,14 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = os.environ.get(
-    "ALLOWED_HOSTS",
-    "localhost,127.0.0.1",
-).split(",")
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get(
+        "ALLOWED_HOSTS",
+        "localhost,127.0.0.1,todo-jwt-fullstack-1.onrender.com,.onrender.com",
+    ).split(",")
+    if host.strip()
+]
 
 
 # ============================================================
@@ -207,22 +211,42 @@ SIMPLE_JWT = {
 
 
 # ============================================================
-# CORS CONFIGURATION
+# CORS & CSRF CONFIGURATION
 # ============================================================
 
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.environ.get(
         "CORS_ALLOWED_ORIGINS",
-        "http://localhost:5173,https://todo-jwt-fullstack.vercel.app",
+        "http://localhost:5173,http://127.0.0.1:5173,https://todo-jwt-fullstack.vercel.app",
+    ).split(",")
+    if origin.strip()
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get(
+        "CSRF_TRUSTED_ORIGINS",
+        "https://todo-jwt-fullstack.vercel.app,https://todo-jwt-fullstack-1.onrender.com,http://localhost:5173,http://127.0.0.1:5173",
     ).split(",")
     if origin.strip()
 ]
 
 
 # ============================================================
-# WHITENOISE
+# WHITENOISE & STORAGES
 # ============================================================
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 STATICFILES_STORAGE = (
     "whitenoise.storage.CompressedManifestStaticFilesStorage"
