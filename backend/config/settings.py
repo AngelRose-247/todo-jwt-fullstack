@@ -239,6 +239,8 @@ CSRF_TRUSTED_ORIGINS = [
 # WHITENOISE & STORAGES
 # ============================================================
 
+WHITENOISE_ROOT = BASE_DIR.parent / "frontend" / "dist"
+
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -251,3 +253,4 @@ STORAGES = {
 STATICFILES_STORAGE = (
     "whitenoise.storage.CompressedManifestStaticFilesStorage"
 )
+
