@@ -34,6 +34,7 @@ ALLOWED_HOSTS = os.environ.get(
     "localhost,127.0.0.1",
 ).split(",")
 
+
 # ============================================================
 # APPLICATIONS
 # ============================================================
@@ -112,21 +113,13 @@ WSGI_APPLICATION = "config.wsgi.application"
 # DATABASE
 # ============================================================
 
-# SQLite database for local development.
-#
-# IMPORTANT:
-# Do NOT add dj_database_url.
-# Do NOT add DATABASE_URL.
-# Do NOT define DATABASES again later in this file.
-
-
-
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
     )
 }
+
 
 # ============================================================
 # PASSWORD VALIDATION
@@ -221,10 +214,11 @@ CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.environ.get(
         "CORS_ALLOWED_ORIGINS",
-        "http://localhost:5173",
+        "http://localhost:5173,https://todo-jwt-fullstack.vercel.app",
     ).split(",")
     if origin.strip()
 ]
+
 
 # ============================================================
 # WHITENOISE
